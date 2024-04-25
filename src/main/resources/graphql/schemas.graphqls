@@ -1,0 +1,50 @@
+type Product {
+    id: ID
+    name: String!
+    description: String
+    price: Float!
+}
+input ProductInput {
+    id: ID!
+    name: String!
+    description: String
+    price: Float!
+}
+type Query {
+    getAllProducts: [Product]
+    getProduct(productId: ID!): Product
+    getAllCarts: [Cart]
+}
+
+
+type Cart {
+    id: ID!
+    cartName: String!
+    quantity: Int
+}
+input CartInput {
+    id: ID!
+    cartName: String!
+    quantity: Int
+}
+
+#type CartItem {
+#    id: ID!
+#    product: Product
+#    quantity: Int
+#}
+
+#input CartItemInput {
+#    id: ID
+#    product: ProductInput
+#    cart: CartInput
+#    quantity: Int
+#}
+
+type Mutation {
+    createProduct(product: ProductInput!):Product
+    updateProduct(product:ProductInput):Boolean
+    deleteProduct(id: ID!): Boolean
+
+    createCart(cart: CartInput!): Cart
+}
