@@ -1,50 +1,45 @@
-type Product {
-    id: ID
+#scalar LocalDate
+#scalar LocalDateTime
+
+schema{
+    mutation:Mutation
+    query:Query
+}
+
+type Mutation{
+    createCart(cart:CartInput):Cart
+    addProductToCart(cartId:ID,products:[ProductInput]):[Product]
+    updateProduct(product:ProductInput):Product
+}
+
+type Query{
+    getAllCart:[Cart]
+    getCartById(cartId:ID!):[Cart]
+}
+
+# Input types
+input CartInput{
+    id:ID
+    title:String
+    products:[ProductInput]
+}
+input ProductInput{
+    id:ID
     name: String!
     description: String
     price: Float!
 }
-input ProductInput {
-    id: ID!
+
+# Output types
+type Cart{
+    id:ID
+    title:String
+    products:[Product]
+}
+
+type Product{
+    id:ID
     name: String!
     description: String
     price: Float!
-}
-type Query {
-    getAllProducts: [Product]
-    getProduct(productId: ID!): Product
-    getAllCarts: [Cart]
-}
-
-
-type Cart {
-    id: ID!
-    cartName: String!
-    quantity: Int
-}
-input CartInput {
-    id: ID!
-    cartName: String!
-    quantity: Int
-}
-
-#type CartItem {
-#    id: ID!
-#    product: Product
-#    quantity: Int
-#}
-
-#input CartItemInput {
-#    id: ID
-#    product: ProductInput
-#    cart: CartInput
-#    quantity: Int
-#}
-
-type Mutation {
-    createProduct(product: ProductInput!):Product
-    updateProduct(product:ProductInput):Boolean
-    deleteProduct(id: ID!): Boolean
-
-    createCart(cart: CartInput!): Cart
 }

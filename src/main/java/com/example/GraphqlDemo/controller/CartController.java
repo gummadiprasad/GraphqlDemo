@@ -1,53 +1,47 @@
 package com.example.GraphqlDemo.controller;
 
-import com.example.GraphqlDemo.entity.Cart;
-import com.example.GraphqlDemo.response.CartResponseDto;
+import com.example.GraphqlDemo.dto.CartDto;
+import com.example.GraphqlDemo.dto.ProductDto;
 import com.example.GraphqlDemo.service.CartService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping(value = "/todo")
+@RequiredArgsConstructor
 public class CartController {
 
-    @Autowired
-    CartService cartService;
+    private final CartService cartService;
 
-    private static Logger LOGGER = LoggerFactory.getLogger(CartController.class);
-
-    @MutationMapping
-    public CartResponseDto createCart(@Argument Cart cart) {
-        LOGGER.info("Entering the create cart method to create cart");
-        CartResponseDto responseDto = new CartResponseDto();
-        try {
-            responseDto =  cartService.save(cart);
-            LOGGER.info("Successfully created cart with id {}", responseDto.getId());
-        } catch (Exception exception) {
-            LOGGER.error(exception.getMessage());
-        }
-        LOGGER.info("Returning the final response from create cart method");
-        return responseDto;
+    @QueryMapping
+    public List<CartDto> getAllCart() {
+        return cartService.getAllCarts();
     }
 
     @QueryMapping
-    public List<Cart> getAllCarts() {
-        LOGGER.info("Entering the get all carts method");
-        List<Cart> carts = null;
-        try {
-            carts = cartService.getAll();
-            LOGGER.info("Successfully fetched all carts");
-        } catch (Exception exception) {
-            LOGGER.error(exception.getMessage());
-        }
-        LOGGER.info("Returning the final response from get all carts method");
-        return carts;
+    public CartDto getCartById(@Argument long cartId) {
+        return cartService.getCartById(cartId);
     }
 
+    @MutationMapping
+    public CartDto createCart(@Argument(value = "cart") CartDto cartDto) {
+        return cartService.addCart(cartDto);
+    }
+
+    @MutationMapping
+    public List<ProductDto> addProductToCart(@Argument long cartId, @Argument List<ProductDto> products) {
+        return cartService.addProductToCart(cartId, products);
+    }
+
+    @MutationMapping
+    public ProductDto updateProduct(@Argument ProductDto product) {
+        return cartService.updateProduct(product);
+    }
 
 }
