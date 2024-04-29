@@ -1,6 +1,7 @@
 package com.example.GraphqlDemo.exception;
 
 import com.example.GraphqlDemo.dto.GenericResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(exception.getMessage());
         return new ResponseEntity<>(genericResponse, HttpStatus.NOT_FOUND);
     }
-
-
 
     @ExceptionHandler(value = IllegalStateException.class)
     public final ResponseEntity<GenericResponse> handleIllegalStateException(IllegalStateException exception) {
@@ -62,7 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler(value = IllegalArgumentException.class)
+    @ExceptionHandler(value = {IllegalArgumentException.class, ConstraintViolationException.class})
     public final ResponseEntity<GenericResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
         GenericResponse genericResponse = new GenericResponse(false, exception.getMessage(), "", HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
         log.error("handling IllegalArgumentException...");
@@ -78,8 +77,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(exception.getMessage());
         return new ResponseEntity<>(genericResponse, HttpStatus.BAD_REQUEST);
     }
-
-
-
 
 }
